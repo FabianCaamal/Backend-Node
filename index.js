@@ -19,7 +19,7 @@ app.use(cors({
 app.use(express.json());
 
 //declaraciones de las rutas
-app.use(require('./src/Routes/web'));
+app.use(require('./src/routes/web'));
 
 //declaracion del puerto
 app.listen( process.env.PORT || 4000, () => console.log('App en puerto', process.env.PORT) );
