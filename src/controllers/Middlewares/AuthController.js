@@ -1,40 +1,46 @@
 const jwt = require('jsonwebtoken');
 const claves = require('../../configs/config');
 
-const usersTemp = {
-    nombre: 'fabian',
-    email: 'fabian@gmail.com',
-    pass: '123'
-}
+const User = require('../../models/User');
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
     const { email, password } = req.body;
 
-    if( email == usersTemp.email && password == usersTemp.pass ){
+    let payload = { email, password };
 
-        const payload = {
-            nombre: usersTemp.nombre,
-            email: usersTemp.email
-        }
+    const user = await User.findOne({email, password}).exec();
+
+    if(user){
 
         jwt.sign({payload}, claves.admin, (err, token) => {
-            (!err) ? res.json({payload, token}) : res.json(JSON.stringify(err));
+            (!err) ? res.json({user, token}) : res.json(err);
         });
-    } else {
-        res.json({ err: 'Credenciales incorrectos' });
-    }
 
+    } else {
+        res.json({err: 'Credenciales incorrectos'});
+    }
 }
 
 
-exports.register = (req, res) => {
-    
-    const payload = req.body;
+exports.register = async (req, res) => {
 
-    jwt.sign({payload}, claves.admin, (err, token) => {
-        (!err) ? res.json({payload, token}) : res.json(JSON.stringify(err));
+    const existUser = await User.findOne({email: req.body.email}).exec();
+
+    if(existUser){
+        return res.json({status: 'ya existe un usuario con este email'});
+    }
+
+    let payload = {
+        nombre: req.body.nombre,
+        email: req.body.email
+    }
+
+    const user = new User(req.body);
+    user.save();
+
+    jwt.sign({payload }, claves.admin, (err, token) => {
+        (!err) ? res.json({user, token}) : res.json(err);
     });
-
 }
 
 exports.verifyToken = (req, res, next) => {

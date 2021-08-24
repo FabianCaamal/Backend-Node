@@ -1,19 +1,17 @@
 // importaciones
-const express = require('express');
-const config = require('./src/configs/config');
-const cors = require('cors');
 require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
 
 const app = express();
 
-// estados globales de la app
-app.set('llave', config.llave);
+// connection DB Mongo
+mongoose.connect('mongodb://127.0.0.1:27017/', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(res => console.log('DB conectado'))
+    .catch(err => console.log(err))
 
 // permisos de CORS
-app.use(cors({ 
-    origin: process.env.ALLOWED_HOST, 
-    methods: 'GET,POST,PUT,DELETE' 
-}));
+app.use(require('./src/configs/config').cors);
 
 // declaracion para recibir datos 
 app.use(express.json());

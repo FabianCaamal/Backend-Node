@@ -1,18 +1,20 @@
-let notas = [
-    {
-        tittle: 'subir repo',
-        description: 'acualizar en la repor con git',
-        status: false
-    }
-];
+const User = require('../models/User');
 
 exports.getUsuarios = (req, res) => {
-    res.json({ status: 200, notas });
+    
+    User.find((err, people) => {
+        res.json(people)
+    })
+
+    // res.json({ status: 200, notas });
 }
 
 exports.postUsuarios = (req, res) => {
+    
+    // let { nombre, email, password } = req.body;
 
-    notas.push(req.body)
+    // const user = new User({ nombre, email, password });
+    // user.save();
 
-    res.json({ status:200, msj: 'Tarea agregada', notas });
+    res.json({ status:200, msj: 'Usuario agregado', body: req.body });
 }
