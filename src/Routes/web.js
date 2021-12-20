@@ -1,16 +1,25 @@
 const express = require('express');
 const router = express.Router();
 
-const { login, register, verifyToken } = require('../controllers/Middlewares/AuthController');
-const users = require('../controllers/UserController');
+const { login, register, verifyToken } = require('../app/controllers/Middlewares/AuthController');
+
+const { userCtr, notaCtr, taxistaCtr } = require('../app/controllers/Index');
 
 // <============= Registro de Auth =================>
 router.post('/login', login)
 router.post('/register', register)
 
-router.get('/notas', verifyToken, users.getUsuarios );
-router.post('/notas', verifyToken, users.postUsuarios );
+// <============= Users =================>
+router.get('/users', verifyToken, userCtr.getUsuarios );
+router.post('/users', verifyToken, userCtr.postUsuarios );
 
-router.get('/api', (req, res) => res.json({ status: 200 }));
+// <============= Notas =================>
+router.get('/notas', verifyToken, notaCtr.getNotas);
+router.post('/notas', verifyToken, notaCtr.postNotas);
+
+
+// <============= Taxistas =================>
+router.get('/taxistas', taxistaCtr.getAllTaxistas);
+router.post('/new-taxista', taxistaCtr.newTaxista);
 
 module.exports = router;
