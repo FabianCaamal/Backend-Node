@@ -1,19 +1,18 @@
-const Notas = require('../models/Notas');
-const Users = require('../models/User');
+const { NotaModel } = require('../models/Index')
 
 exports.getNotas = async (req, res) => {
-    let notas = await Notas.find();
+    let notas = await NotaModel.find();
 
-    let todo = await Users.populate(notas, { path: "autor" });
+    // let todo = await Users.populate(notas, { path: "autor" });
 
-    res.json(todo);
+    res.json(notas);
 }
 
 exports.postNotas = async (req, res) => {
 
-    const { titulo, body, userId } = req.body;
+    const { titulo, body } = req.body;
 
-    const create = await Notas.create({ titulo, body, autor: userId });
+    const create = await NotaModel.create({ titulo, body, autor: userId });
 
     res.json({ create });
 }
